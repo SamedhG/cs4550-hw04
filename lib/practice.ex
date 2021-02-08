@@ -7,19 +7,15 @@ defmodule Practice do
   if it comes from the database, an external API or others.
   """
 
-  def double(x) do
-    2 * x
-  end
+  def double(x), do: 2 * x
 
-  def calc(expr) do
-    # This is more complex, delegate to lib/practice/calc.ex
-    Practice.Calc.calc(expr)
-  end
+  def calc(expr), do: Practice.Calc.calc(expr)
 
-  def factor(x) do
-    # Maybe delegate this too.
-    [1,2,x]
-  end
+  def factor(x), do: Practice.Factor.factors(x)
 
-  # TODO: Add a palindrome? function.
+  def palindrome?(str) do
+    s1 = String.downcase str
+    s2 = String.reverse s1
+    s1 === s2
+  end
 end
