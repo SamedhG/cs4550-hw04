@@ -1,24 +1,32 @@
 defmodule Practice.Calc do
-  def parse_float(text) do
-    {num, _} = Float.parse(text)
-    num
+  import Enum 
+
+  ## Parse a float, ignoring spaces
+  defp parse_float(text) do
+    case text |> String.trim |> Float.parse do
+      {num, _} -> num
+      :error -> raise RuntimeError, message: "couldnt parse float"
+    end
   end
 
+  ## Calculates the result of an arithmatic expression following MDAS
+  #convention (no parenthesis)
   def calc(expr) do
-    # This should handle +,-,*,/ with order of operations,
-    # but doesn't need to handle parens.
-    expr
-    |> String.split(~r/\s+/)
-    |> hd
-    |> parse_float
-    |> :math.sqrt()
+    calc(expr, "-")
+  end
 
-    # Hint:
-    # expr
-    # |> split
-    # |> tag_tokens  (e.g. [+, 1] => [{:op, "+"}, {:num, 1.0}]
-    # |> convert to postfix
-    # |> reverse to prefix
-    # |> evaluate as a stack calculator using pattern matching
+  # Caclculates the expression given the next operation to perform, assumes
+  # lower priority operations have already been taken out
+  defp calc(expr, next_op) do
+    case next_op do
+      "-" ->
+        [head | tail] = expr |> String.split("-") |> map(&(calc(&1, "+")))
+        reduce(tail, head, &(&2 - &1))
+      "+" -> expr |> String.split("+") |> map(&(calc(&1, "/"))) |> reduce(0, &+/2)
+      "/" -> 
+        [head | tail] = expr |> String.split("/") |> map(&(calc(&1, "*")))
+        reduce(tail, head, &(&2 / &1))
+      "*" -> expr |> String.split("*") |> map(&parse_float/1) |> reduce(1, &*/2)
+    end
   end
 end

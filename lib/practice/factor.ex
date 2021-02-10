@@ -1,4 +1,5 @@
 defmodule Practice.Factor do
+  # Find the prime factors of the given number
   def factors(x), do: factors(x, 2)
 
   defp factors(1, _), do: []

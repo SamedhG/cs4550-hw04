@@ -6,20 +6,32 @@ defmodule PracticeWeb.PageController do
   end
 
   def double(conn, %{"x" => x}) do
-    {x, _} = Integer.parse(x)
-    y = Practice.double(x)
-    render conn, "double.html", x: x, y: y
+    case Float.parse(x) do
+      {x, _} -> 
+        y = Practice.double(x)
+        render conn, "double.html", x: x, y: y
+      :error -> 
+        render conn, "error.html", input: x, msg: "not a number" 
+    end
   end
 
   def calc(conn, %{"expr" => expr}) do
-    y = Practice.calc(expr)
-    render conn, "calc.html", expr: expr, y: y
+    try do
+      y = Practice.calc(expr)
+      render conn, "calc.html", expr: expr, y: y
+    rescue
+      e -> render conn, "error.html", input: expr, msg: e.message
+    end
   end
 
   def factor(conn, %{"x" => x}) do
-    {x, _} = Integer.parse(x)
-    y = x |> Practice.factor |> Enum.join(", ")
-    render conn, "factor.html", x: x, y: y
+    case Integer.parse(x) do
+      {x, _} -> 
+        y = x |> Practice.factor |> Enum.join(", ")
+        render conn, "factor.html", x: x, y: y
+      :error -> 
+        render conn, "error.html", input: x, msg: "not an integer" 
+    end
   end
 
   def palindrome(conn, %{"str" => str}) do 

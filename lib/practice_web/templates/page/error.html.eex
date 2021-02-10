@@ -1,0 +1,9 @@
+<div class="row">
+  <div class="column">
+    <p><%= link "← go back", to: "/" %></p>
+    <h2>Error Occured</h2>
+
+    <p>Given Input = <%= @input %></p>
+    <p>Message = <%= @msg %></p>
+  </div>
+</div>
